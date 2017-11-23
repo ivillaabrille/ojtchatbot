@@ -1,0 +1,5 @@
+Bot Needs:
+-sentence understanding needs improvement
+-wrong spelling input understanding
+-if user input has no definitive answer, ask for a response for it and add to trainingdata
+-able to take other types of corpuses, and transform them so that our readcorpus.py will be able to read and add to our trainingdata.
