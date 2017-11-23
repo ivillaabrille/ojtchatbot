@@ -114,34 +114,34 @@ while botResponse[0] != 'See you later, thanks for visiting':
 
         #checks if the bot has a definitive answer to the question
         if botResponse[1] < -0.70:
-          print('I dont have a good enough response for that, please tell me what should I respond to that kind of question/query so that I can learn it:')
-          userInput2 = input('> ')
-          print('Alrighty All Set! If I get the question/query "{}"" or anything similar to it, I will reply with "{}"'.format(userInput, userInput2))
-          with open('training_data.txt', 'r') as file:
-            original = file.read()[:-1]
-          with open('current_training_data.txt', 'w') as file2:
-            file2.write(original)
-            file2.write('    ["{0}", "{1}"],'.format(userInput, userInput2))
-            file2.write('\n]')
-          with open('current_training_data.txt', 'r') as file3:
-            current = file3.read()
-          with open('training_data.txt', 'w') as file4:
-            file4.write(current)
-          training_data = eval(current)
-          pipe.fit([x[0] for x in training_data], [x[1] for x in training_data])
+            print('I dont have a good enough response for that, please tell me what should I respond to that kind of question/query so that I can learn it:')
+            userInput2 = input('> ')
+            print('Alrighty All Set! If I get the question/query "{}"" or anything similar to it, I will reply with "{}"'.format(userInput, userInput2))
+            with open('training_data.txt', 'r') as file:
+                original = file.read()[:-1]
+            with open('current_training_data.txt', 'w') as file2:
+                file2.write(original)
+                file2.write('    ["{0}", "{1}"],'.format(userInput, userInput2))
+                file2.write('\n]')
+            with open('current_training_data.txt', 'r') as file3:
+                current = file3.read()
+            with open('training_data.txt', 'w') as file4:
+                file4.write(current)
+                training_data = eval(current)
+            pipe.fit([x[0] for x in training_data], [x[1] for x in training_data])
 
         else:
-          print ('Bot: {0} (Confidence: {1})'.format(botResponse[0], botResponse[1]))
+            print ('Bot: {0} (Confidence: {1})'.format(botResponse[0], botResponse[1]))
 
 
     else:
         print('How many questions and responses should I learn?')
         noOfNewQuestions = int(input('> '))
         with open('training_data.txt', 'r') as fp:
-          original = fp.read()[:-1]
+            original = fp.read()[:-1]
         with open('current_training_data.txt', 'w') as fw:
-          fw.write(original)
-          for n in range(noOfNewQuestions):
+            fw.write(original)
+            for n in range(noOfNewQuestions):
               statement = input('{0} #{1}: '.format('Statement', n+1))
               answer = input('{0} #{1}: '.format('Answer to statement', n+1))
               if n == 0:
@@ -150,10 +150,10 @@ while botResponse[0] != 'See you later, thanks for visiting':
               else:
                 fw.write('\n    ["{0}", "{1}"],'.format(statement, answer))
                 current_training_data.append([statement, answer])
-          fw.write('\n]')
+            fw.write('\n]')
         with open('current_training_data.txt', 'r') as fw2:
-          current = fw2.read()
+            current = fw2.read()
         with open('training_data.txt', 'w') as fp2:
-          fp2.write(current)
+            fp2.write(current)
         training_data = eval(current)
         pipe.fit([x[0] for x in training_data], [x[1] for x in training_data])
