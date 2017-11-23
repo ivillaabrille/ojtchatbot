@@ -1,5 +1,8 @@
 Bot Needs:
 -sentence understanding needs improvement
 -wrong spelling input understanding
--if user input has no definitive answer, ask for a response for it and add to trainingdata
+-if user input has no definitive answer, ask for a response for it and add to trainingdata and train: CHECK
+-find appropriate confidence level: IN PROGRESS
 -able to take other types of corpuses, and transform them so that our readcorpus.py will be able to read and add to our trainingdata.
+-readcorpus.py should replace paragraphs and place it onto one line
+-integrate to django

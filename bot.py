@@ -65,6 +65,7 @@ training_data = []
 current_training_data = []
 
 hasData, hasOtherData = checkExistingFiles()
+#check if bot has any data to base on
 if not hasData:
     print('I know nothing, teach me responses to at least 10 statements for a headstart')
     with open('training_data.txt', 'w') as fw:
@@ -103,13 +104,35 @@ else:
           fp2.write(original)
         pipe.fit([x[0] for x in training_data], [x[1] for x in training_data])
 
-botResponse = ['', '']
+botResponse = ['', 0]
 while botResponse[0] != 'See you later, thanks for visiting':
     print('Enter "Teach Me" to input new questions and what should the bot respond with.')
     userInput = input('> ')
+    #checks if user input is trying to teach the bot or just asking for help
     if userInput != 'Teach Me':
         botResponse = [pipe.predict([userInput])[0], max(pipe.decision_function([userInput])[0])]
-        print ('Bot: {0} (Confidence: {1})'.format(botResponse[0], botResponse[1]))
+
+        #checks if the bot has a definitive answer to the question
+        if botResponse[1] < -0.70:
+          print('I dont have a good enough response for that, please tell me what should I respond to that kind of question/query so that I can learn it:')
+          userInput2 = input('> ')
+          print('Alrighty All Set! If I get the question/query "{}"" or anything similar to it, I will reply with "{}"'.format(userInput, userInput2))
+          with open('training_data.txt', 'r') as file:
+            original = file.read()[:-1]
+          with open('current_training_data.txt', 'w') as file2:
+            file2.write(original)
+            file2.write('    ["{0}", "{1}"],'.format(userInput, userInput2))
+            file2.write('\n]')
+          with open('current_training_data.txt', 'r') as file3:
+            current = file3.read()
+          with open('training_data.txt', 'w') as file4:
+            file4.write(current)
+          training_data = eval(current)
+          pipe.fit([x[0] for x in training_data], [x[1] for x in training_data])
+
+        else:
+          print ('Bot: {0} (Confidence: {1})'.format(botResponse[0], botResponse[1]))
+
 
     else:
         print('How many questions and responses should I learn?')
