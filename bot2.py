@@ -1,8 +1,9 @@
+#New Classifier
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS as stopwords 
 from sklearn.feature_extraction.text import CountVectorizer 
 from sklearn.base import TransformerMixin 
 from sklearn.pipeline import Pipeline
-from sklearn.svm import LinearSVC
+from sklearn.naive_bayes import GaussianNB
 import spacy
 from nltk.stem.lancaster import LancasterStemmer
 import json
@@ -21,6 +22,17 @@ class pipelineCleaner(TransformerMixin):
     def get_params(self, deep=True):
         return {}
 
+class DenseTransformer(TransformerMixin):
+
+    def transform(self, X, y=None, **fit_params):
+        return X.todense()
+
+    def fit_transform(self, X, y=None, **fit_params):
+        self.fit(X, y, **fit_params)
+        return self.transform(X)
+
+    def fit(self, X, y=None, **fit_params):
+        return self
 
 def computeAccuracy(test_data, output_data):     
     if len(test_data) != len(output_data):
@@ -60,7 +72,8 @@ def checkExistingFiles():
 pipe = Pipeline([
     ("cleaner", pipelineCleaner()),
     ('vectorizer', CountVectorizer(tokenizer = englishTokenizer, ngram_range=(1,1))),
-    ('classifier', LinearSVC(penalty='l2', loss='squared_hinge', dual=False, tol=1e-3))])
+    ('to_dense', DenseTransformer()), 
+    ('classifier', GaussianNB())])
 
 # training and testing data
 training_data = []
@@ -112,7 +125,7 @@ while botResponse[0] != 'See you later, thanks for visiting':
     userInput = input('> ')
     #checks if user input is trying to teach the bot or just asking for help
     if userInput != 'Teach Me':
-        botResponse = [pipe.predict([userInput])[0], max(pipe.decision_function([userInput])[0])]
+        botResponse = [pipe.predict([userInput])[0], 0]
         with open('training_data.txt', 'r') as f:
             original = f.readlines()
 
